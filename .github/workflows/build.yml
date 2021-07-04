@@ -53,7 +53,7 @@ jobs:
             -DLLVM_ENABLE_PROJECTS="lld;clang" `
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_INSTALL_PREFIX=".\install"
-          cmake --build .\build --target INSTALL --config Release
+          cmake --build .\build --target INSTALL --config Release -j
           7z a -mx9 "llvm-${{ env.llvm_version }}-windows-x64.7z" ".\install\*"
 
       
