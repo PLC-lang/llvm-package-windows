@@ -19,6 +19,8 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: windows-latest
+    env:
+      llvm_version: 11.0.1
     
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -33,7 +35,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: llvm/llvm-project
-          ref: "llvmorg-11.0.1"
+          ref: "llvmorg-$llvm_version"
           path: 'llvm'
       
 
@@ -52,11 +54,12 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_INSTALL_PREFIX=".\install"
           cmake --build .\build --target INSTALL --config Release
+          7z a -mx9 "llvm-$llvm_version-windows-x64.7z" ".\install\*"
+
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: llvm-11.0.1-windows-x64
-          path: install/
+          path: llvm-$llvm_version-windows-x64.7z
         
 
