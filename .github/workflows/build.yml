@@ -1,0 +1,64 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+    
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
+      
+      - name: Checkout llvm
+        uses: actions/checkout@v2
+        with:
+          repository: https://github.com/llvm/llvm-project.git
+          ref: "11.0.1"
+          path: 'llvm'
+      
+
+      # Runs a single command using the runners shell
+      - name: Build llvm
+        run: |
+          mkdir build
+          mkdir install
+          cmake `
+            -S ".\llvm\llvm" `
+            -B ".\build `
+            -G "Visual Studio 16 2019 `
+            -Thost=x64 `
+            -A x64 `
+            -DLLVM_ENABLE_PROJECTS="lld;clang" `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_INSTALL_PREFIX=".\install" 
+            #-DLLVM_ENABLE_ASSERTIONS=ON
+          cmake --build .\build --target INSTALL --config Release
+          #7z a -mx9 "llvm-11.0.1-windows-x64.7z"
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: llvm-11.0.1-windows-x64
+          path: install/
+        
+
