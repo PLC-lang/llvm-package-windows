@@ -54,12 +54,13 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_INSTALL_PREFIX=".\install"
           cmake --build .\build --target INSTALL --config Release -j
-          7z a -mx9 "llvm-${{ env.llvm_version }}-windows-x64.7z" ".\install\*"
+          7z a -mx9 "llvm-${{ env.llvm_version }}-win64.7z" ".\install\*"
 
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v2.2.4
         with:
-          path: llvm-${{ env.llvm_version }}-windows-x64.7z
+          name: llvm-${{ env.llvm_version }}-win64.7z
+          path: llvm-${{ env.llvm_version }}-win64.7z
         
 
