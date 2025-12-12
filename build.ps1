@@ -1,4 +1,4 @@
-$llvm_version = "14.0.6"
+$llvm_version = "21.1.7"
 
 # Check if scoop is installed
 if (!(Get-Command "scoop" -errorAction SilentlyContinue)) {
